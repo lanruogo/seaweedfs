@@ -8,6 +8,7 @@ import (
 	"image/jpeg"
 	"image/gif"
 	"image/png"
+	"fmt"
 )
 
 func Resized(ext string, data []byte, width, height int, mode string) (resized []byte, w int, h int) {
@@ -35,6 +36,7 @@ func Resized(ext string, data []byte, width, height int, mode string) (resized [
 		} else {
 			return data, bounds.Dx(), bounds.Dy()
 		}
+		fmt.Println("ext:",ext)
 		var buf bytes.Buffer
 		if ext == "" {
 			err = png.Encode(&buf, dstImage)
