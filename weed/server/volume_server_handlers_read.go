@@ -15,10 +15,10 @@ import (
 	"encoding/json"
 
 	"github.com/chrislusf/seaweedfs/weed/glog"
-	"github.com/chrislusf/seaweedfs/weed/images"
 	"github.com/chrislusf/seaweedfs/weed/operation"
 	"github.com/chrislusf/seaweedfs/weed/storage"
 	"github.com/chrislusf/seaweedfs/weed/util"
+	"github.com/chrislusf/seaweedfs/weed/images"
 )
 
 var fileNameEscaper = strings.NewReplacer("\\", "\\\\", "\"", "\\\"")
@@ -135,17 +135,16 @@ func (vs *VolumeServer) GetOrHeadHandler(w http.ResponseWriter, r *http.Request)
 			}
 		}
 	}
-	if ext == ".png" || ext == ".jpg" || ext == ".gif" {
-		width, height := 0, 0
-		if r.FormValue("width") != "" {
-			width, _ = strconv.Atoi(r.FormValue("width"))
-		}
-		if r.FormValue("height") != "" {
-			height, _ = strconv.Atoi(r.FormValue("height"))
-		}
+	width, height := 0, 0
+	if r.FormValue("width") != "" {
+		width, _ = strconv.Atoi(r.FormValue("width"))
+	}
+	if r.FormValue("height") != "" {
+		height, _ = strconv.Atoi(r.FormValue("height"))
+	}
+	if width !=0 || height != 0 {
 		n.Data, _, _ = images.Resized(ext, n.Data, width, height, r.FormValue("mode"))
 	}
-
 	if e := writeResponseContent(filename, mtype, bytes.NewReader(n.Data), w, r); e != nil {
 		glog.V(2).Infoln("response write error:", e)
 	}

@@ -16,6 +16,7 @@ func (vs *VolumeServer) GetMaster() string {
 }
 func (vs *VolumeServer) heartbeat() {
 
+	glog.V(0).Infof("this is test")
 	glog.V(0).Infof("Volume server start with masters: %v", vs.MasterNodes)
 	vs.store.SetDataCenter(vs.dataCenter)
 	vs.store.SetRack(vs.rack)
