@@ -3,12 +3,11 @@ package images
 import (
 	"bytes"
 	"image"
-	"image/gif"
-	"image/jpeg"
-	"image/png"
-
 	"github.com/chrislusf/seaweedfs/weed/glog"
 	"github.com/disintegration/imaging"
+	"image/jpeg"
+	"image/gif"
+	"image/png"
 )
 
 func Resized(ext string, data []byte, width, height int, mode string) (resized []byte, w int, h int) {
@@ -37,14 +36,22 @@ func Resized(ext string, data []byte, width, height int, mode string) (resized [
 			return data, bounds.Dx(), bounds.Dy()
 		}
 		var buf bytes.Buffer
-		switch ext {
-		case ".png":
-			png.Encode(&buf, dstImage)
-		case ".jpg", ".jpeg":
-			jpeg.Encode(&buf, dstImage, nil)
-		case ".gif":
-			gif.Encode(&buf, dstImage, nil)
+		if ext == "" {
+			err = png.Encode(&buf, dstImage)
+			if err!=nil{
+				jpeg.Encode(&buf, dstImage, nil)
+			}
+		}else{
+			switch ext {
+			case ".png":
+				png.Encode(&buf, dstImage)
+			case ".jpg", ".jpeg":
+				jpeg.Encode(&buf, dstImage, nil)
+			case ".gif":
+				gif.Encode(&buf, dstImage, nil)
+			}
 		}
+
 		return buf.Bytes(), dstImage.Bounds().Dx(), dstImage.Bounds().Dy()
 	} else {
 		glog.Error(err)
